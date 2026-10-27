@@ -1,5 +1,5 @@
 // Offline cache for the app shell (the car data always comes live from the adapter).
-const C = 'car-scanner-v1';
+const C = 'car-scanner-v2';
 const SHELL = ['./', 'index.html', 'manifest.json', 'icon.svg', 'js/app.js', 'js/obd.js', 'js/elm.js', 'js/ble.js', 'js/sim.js', 'js/scan.js',
   'data/dtc_ar.json', 'data/vag_modules.json', 'cars/anchors.json'];
 self.addEventListener('install', e => e.waitUntil(caches.open(C).then(c => c.addAll(SHELL))));

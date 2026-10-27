@@ -42,8 +42,8 @@ nav button.on{color:var(--pri)}.pane{display:none}.pane.on{display:block}
 .cm .mk{cursor:pointer}.cm .mk circle.dot{stroke:#fff;stroke-width:2}.cm .mk.s-stop circle{fill:#ff3b3b}.cm .mk.s-caution circle{fill:#ffa000}
 .cm .mk text{font-size:12px;font-weight:bold;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 body.hudmode header,body.hudmode nav,body.hudmode .hudbar,body.hudmode .warn,body.hudmode #connect{display:none}body.hudmode main{max-width:none;padding:0}
-body.hudmode .hud{border:0;border-radius:0;min-height:100vh;background:#000}body.hudmode.mirror #dashbody{transform:scaleX(-1)}
-#hudexit{display:none}body.hudmode #hudexit{display:block;position:fixed;top:8px;left:8px;z-index:9;opacity:.5}
+body.hudmode .hud{border:0;border-radius:0;min-height:100vh;background:#000}body.hudmode.mirror #dashbody,body.hudmode.mirror #nocar{transform:scaleX(-1)}
+#hudctl{display:none}body.hudmode #hudctl{display:flex;gap:8px;position:fixed;top:8px;left:8px;z-index:9;opacity:.6}
 footer{color:var(--mut);font-size:11px;text-align:center;padding:10px}
 </style>
 </head>
@@ -65,9 +65,10 @@ footer{color:var(--mut);font-size:11px;text-align:center;padding:10px}
     <div class="row hudbar" style="margin-bottom:8px"><b style="flex:1">الداشبورد الحي</b>
       <button data-hud="gauges">عدادات</button><button data-hud="grid">12 قراءة</button><button data-hud="lamps">لمبات</button>
       <button id="runBtn" class="pri">▶ تشغيل</button><button id="hudBtn">🪟 HUD</button></div>
+    <p id="nocar" style="text-align:center;font-size:20px;color:#ffcf7a;margin:6px 0">⚠ مش متصل بالسيارة — اكبس «اتصل بالقطعة» فوق (أو «تجربة»)</p>
     <div id="dashbody"></div>
   </section>
-  <button id="hudexit">✕</button>
+  <div id="hudctl"><button id="hudflip">↔ قلب للزجاج</button><button id="hudexit">✕ خروج</button></div>
 </div>
 
 <div class="pane" id="p-insp">

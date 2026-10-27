@@ -87,6 +87,7 @@ function renderDash() {
   document.querySelectorAll('[data-hud]').forEach(b => b.classList.toggle('pri', b.dataset.hud === HUD));
   $('runBtn').textContent = timer ? '⏸ إيقاف' : '▶ تشغيل';
   const volt = V.volt ?? V[0x42];
+  $('nocar').hidden = !!elm;
   if (HUD === 'gauges') $('dashbody').innerHTML = `<div class="gauges"><div>${gauge(V[0x0c], 0, 8000, 'دورات', 'x1000', { red: 6500, div: 1000 })}</div>
      <div>${gauge(V[0x0d], 0, 240, 'السرعة', 'km/h', { big: true, ticks: 12 })}</div><div>${gauge(V[5], 40, 130, 'الحرارة', '°C', { red: 110, ticks: 9 })}</div></div>
      <div class="g12" style="margin-top:6px">${tile('فولت', volt, 'V', 1)}${tile('الحمل', V[4], '%')}${tile('البنزين', V[0x2f], '%')}</div>`;
@@ -114,7 +115,8 @@ async function tick() {
 }
 function stopDash() { clearInterval(timer); timer = null; renderDash(); }
 $('runBtn').onclick = () => { if (timer) return stopDash(); if (!need()) return; timer = setInterval(tick, 400); renderDash(); };
-$('hudBtn').onclick = async () => { document.body.classList.add('hudmode', 'mirror'); HUD = 'gauges'; renderDash(); if (!timer && elm) $('runBtn').click(); try { await document.documentElement.requestFullscreen(); } catch { /* optional */ } };
+$('hudBtn').onclick = async () => { document.body.classList.add('hudmode'); HUD = 'gauges'; renderDash(); if (!timer && elm) $('runBtn').click(); try { await document.documentElement.requestFullscreen(); } catch { /* optional */ } };
+$('hudflip').onclick = () => document.body.classList.toggle('mirror');
 $('hudexit').onclick = () => { document.body.classList.remove('hudmode', 'mirror'); try { document.exitFullscreen(); } catch { /* not fullscreen */ } };
 
 // ---------- inspection ----------
