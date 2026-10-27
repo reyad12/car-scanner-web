@@ -50,3 +50,21 @@ test('demo car finds the weak cylinder and the codes', async () => {
   assert.ok((await describe('P2BAE')).ext);
   assert.equal(score([]), 100);
 });
+
+test('car recognised from the VIN', async () => {
+  const { decodeVin } = await import('../js/vin.js');
+  const k = decodeVin('TMBJB9NS4P8044186');
+  assert.equal(k.make, 'Skoda'); assert.equal(k.model, 'Kodiaq'); assert.equal(k.year, 2023); assert.equal(k.body, 'suv');
+  assert.equal(decodeVin('WAUZZZF4XLA012345').model, 'A4');
+  assert.equal(decodeVin('WVWZZZCDZMW123456').model, 'Golf 8');
+  assert.equal(decodeVin('JTDKB20U093123456').make, 'Toyota');
+});
+test('English dictionary covers the visible page', async () => {
+  const fs = await import('node:fs');
+  const { EN } = await import('../js/i18n.js');
+  const keys = Object.keys(EN).sort((a, b) => b.length - a.length);
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/<style>[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/g, '');
+  const left = [...html.matchAll(/>([^<>]*[؀-ۿ][^<>]*)</g)].map(m => { let t = m[1]; for (const k of keys) t = t.split(k).join(EN[k]); return t; })
+    .filter(t => /[؀-ۿ]/.test(t));
+  assert.deepEqual(left, []);
+});

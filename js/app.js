@@ -2,11 +2,13 @@ import { Elm } from './elm.js';
 import { BleTransport, bleSupported } from './ble.js';
 import { SimTransport } from './sim.js';
 import { inspect, codes, describe, pid, supported } from './scan.js';
-import { parseResponse } from './obd.js';
+import { parseResponse, parseVin } from './obd.js';
+import { setupLanguage, fl, tr } from './i18n.js';
+import { decodeVin } from './vin.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let elm = null, SUP = null, RESULT = null, V = {}, MIL = null, timer = null, HUD = localStorage.getItem('hud') || 'gauges';
+let CAR = null, elm = null, SUP = null, RESULT = null, V = {}, MIL = null, timer = null, HUD = localStorage.getItem('hud') || 'gauges';
 const LV = { stop: 'خطير', caution: 'انتبه', ok: 'سليم', info: 'معلومة' };
 
 // ---------- tabs ----------
@@ -26,10 +28,13 @@ async function start(transport, label) {
   try {
     await elm.init();
     SUP = await supported(elm);
-    const vin = (await elm.query('0902', 8000).catch(() => [])).length;
+    CAR = decodeVin(parseVin(await elm.query('0902', 8000).catch(() => [])));
+    if (CAR && CAR.body) { $('bodySel').value = CAR.body; }
     setStatus('متصل ✔ ' + label, true);
     $('connect').hidden = true;
-    $('cmsg').textContent = `متصل ✔ — ${elm.version} — بروتوكول ${elm.protocol}` + (vin ? '' : '');
+    const carTxt = CAR ? [fl === 'en' ? CAR.make : CAR.make_ar, CAR.model, CAR.year].filter(Boolean).join(' ') : '';
+    $('cmsg').innerHTML = `متصل ✔ — ${esc(elm.version)} — بروتوكول ${esc(elm.protocol)}` + (carTxt ? `<br><b style="font-size:17px">🚗 ${esc(carTxt)}</b> <span class="sub" dir="ltr">${esc(CAR.vin)}</span>` : '');
+    $('carline').textContent = carTxt;
   } catch (e) {
     const off = /UNABLE TO CONNECT|NO DATA|ignition/.test(e.message);
     $('cmsg').innerHTML = `<span class="err">${off ? 'القطعة متصلة ✔ بس السيارة ما بترد — السيارة مطفية. شغّل الإشعال (ON) أو المحرك وجرّب كمان مرة.' : 'ما زبط الاتصال: ' + esc(e.message)}</span>`;
@@ -44,7 +49,7 @@ $('bleBtn').onclick = async () => {
 $('simBtn').onclick = () => start(new SimTransport($('simSel').value), '(محاكاة)');
 $('st').onclick = () => { $('connect').hidden = !$('connect').hidden; };
 $('disBtn').onclick = () => { stopDash(); if (elm) elm.close(); elm = null; setStatus('غير متصل', false); $('cmsg').textContent = ''; };
-const need = () => { if (!elm) { alert('اتصل بالسيارة أول (فوق).'); return false; } return true; };
+const need = () => { if (!elm) { alert(tr('اتصل بالسيارة أول (فوق).')); return false; } return true; };
 
 // ---------- dashboard ----------
 function arc(cx, cy, r, a0, a1) {
@@ -125,7 +130,7 @@ $('inspBtn').onclick = async () => {
   const was = !!timer; if (was) stopDash();
   $('iprog').hidden = false; $('inspBtn').disabled = true;
   try {
-    RESULT = await inspect(elm, { make: null, progress: (p, ar) => { $('ibar').style.width = p + '%'; $('imsg').textContent = ar + ` (${p}%)`; } });
+    RESULT = await inspect(elm, { make: CAR && CAR.make, progress: (p, ar, en) => { $('ibar').style.width = p + '%'; $('imsg').textContent = (fl === 'en' ? en : ar) + ` (${p}%)`; } });
     localStorage.setItem('last', JSON.stringify(RESULT));
     renderSummary();
   } catch (e) { $('imsg').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
@@ -140,7 +145,7 @@ function renderSummary() {
     <div><b style="font-size:19px">${r.score >= 85 ? 'ممتازة' : r.score >= 70 ? 'جيدة' : r.score >= 50 ? 'مقبولة — بدها تصليح' : 'سيئة'}</b>
     <div>التكلفة التقديرية: <b dir="ltr">$${cost[0].toLocaleString()}–${cost[1].toLocaleString()}</b></div><div class="sub" dir="ltr">${esc(r.vin || '')}</div>
     <button onclick="document.querySelector('[data-tab=map]').click()">🚙 شوفها على السيارة</button></div></div></section>
-    <section class="card"><h2>النتائج</h2>${r.findings.slice().sort((a, b) => order[a.level] - order[b.level]).map(f => `<div class="dtc ${f.level}"><span class="tag">${LV[f.level]}</span>${esc(f.ar)}${f.cost ? ` <span class="sub" dir="ltr">($${f.cost[0]}–${f.cost[1]})</span>` : ''}</div>`).join('')}</section>`;
+    <section class="card"><h2>النتائج</h2>${r.findings.slice().sort((a, b) => order[a.level] - order[b.level]).map(f => `<div class="dtc ${f.level}"><span class="tag">${LV[f.level]}</span>${esc(f[fl])}${f.cost ? ` <span class="sub" dir="ltr">($${f.cost[0]}–${f.cost[1]})</span>` : ''}</div>`).join('')}</section>`;
 }
 
 // ---------- car map ----------
@@ -175,7 +180,7 @@ $('map').onclick = e => {
   animate([Math.min(Math.max(0, cx - w / 2), full[2] - w), Math.min(Math.max(0, cy - h / 2), full[3] - h), w, h]); ZOOM = true; $('zoomOut').hidden = false;
   const z = g.dataset.zone, fs = (RESULT ? RESULT.findings : []).filter(f => f.zone === z || (z === 'engine' && f.zone.startsWith('cyl')));
   const name = (s.querySelector(`g.z[data-zone="${z}"] title`) || {}).textContent || z;
-  $('zinfo').innerHTML = `<h2>${esc(name)}</h2>` + (fs.length ? fs.map(f => `<div class="dtc ${f.level}"><span class="tag">${LV[f.level]}</span>${esc(f.ar)}${(f.causes_ar || []).length ? `<div class="sub">الأسباب: ${f.causes_ar.map(esc).join(' • ')}</div>` : ''}${f.cost ? `<div>التكلفة التقديرية: <b dir="ltr">$${f.cost[0]}–${f.cost[1]}</b></div>` : ''}</div>`).join('') : '<span class="sub">ما في ملاحظات على هالقطعة.</span>');
+  $('zinfo').innerHTML = `<h2>${esc(name)}</h2>` + (fs.length ? fs.map(f => `<div class="dtc ${f.level}"><span class="tag">${LV[f.level]}</span>${esc(f[fl])}${(f['causes_' + fl] || []).length ? `<div class="sub">الأسباب: ${f['causes_' + fl].map(esc).join(' • ')}</div>` : ''}${f.cost ? `<div>التكلفة التقديرية: <b dir="ltr">$${f.cost[0]}–${f.cost[1]}</b></div>` : ''}</div>`).join('') : '<span class="sub">ما في ملاحظات على هالقطعة.</span>');
   setTimeout(() => { const m = $('map').getBoundingClientRect(), zi = $('zinfo').getBoundingClientRect(); scrollBy({ top: Math.min(m.top - 60, zi.bottom - innerHeight + 80), behavior: 'smooth' }); }, 120);
 };
 $('zoomOut').onclick = () => { const s = $('map').querySelector('svg'); animate(s.dataset.full.split(' ').map(Number)); ZOOM = false; $('zoomOut').hidden = true; };
@@ -188,21 +193,23 @@ $('codesBtn').onclick = async () => {
   const c = await codes(elm), all = [...new Set([...c.stored, ...c.pending, ...c.permanent])];
   const rows = [];
   for (const code of all) {
-    const d = await describe(code), grp = ['stored', 'pending', 'permanent'].filter(g => c[g].includes(code)).map(g => ({ stored: 'مخزّن', pending: 'معلّق', permanent: 'دائم' }[g]));
-    rows.push(`<div class="dtc ${d.severity}"><b dir="ltr">${code}</b> ${grp.map(g => `<span class="tag">${g}</span>`).join('')}<div>${esc(d.ar)}</div>${d.causes_ar.length ? `<div class="sub">الأسباب: ${d.causes_ar.map(esc).join(' • ')}</div>` : ''}<div class="sub" dir="ltr">~$${d.cost[0]}–${d.cost[1]}</div></div>`);
+    const d = await describe(code, CAR && CAR.make), grp = ['stored', 'pending', 'permanent'].filter(g => c[g].includes(code)).map(g => ({ stored: 'مخزّن', pending: 'معلّق', permanent: 'دائم' }[g]));
+    rows.push(`<div class="dtc ${d.severity}"><b dir="ltr">${code}</b> ${grp.map(g => `<span class="tag">${g}</span>`).join('')}<div>${esc(d[fl])}</div>${d['causes_' + fl].length ? `<div class="sub">الأسباب: ${d['causes_' + fl].map(esc).join(' • ')}</div>` : ''}<div class="sub" dir="ltr">~$${d.cost[0]}–${d.cost[1]}</div></div>`);
   }
   $('codes').innerHTML = rows.join('') || '<p>ما في أكواد أعطال ✔</p>';
   if (was) $('runBtn').click();
 };
 $('clearBtn').onclick = async () => {
   if (!need()) return;
-  const t = prompt('رح تنمسح الأكواد وتنطفي لمبة المحرك. إذا ما تصلّح العطل بترجع.\nللتأكيد اكتب: امسح');
-  if ((t || '').trim() !== 'امسح') return;
+  const word = fl === 'en' ? 'CLEAR' : 'امسح';
+  const t = prompt(fl === 'en' ? 'This clears the codes and turns off the engine light. If the fault is not fixed it comes back. Type CLEAR to confirm:' : 'رح تنمسح الأكواد وتنطفي لمبة المحرك. إذا ما تصلّح العطل بترجع. للتأكيد اكتب: امسح');
+  if ((t || '').trim().toUpperCase() !== word.toUpperCase()) return;
   const r = await elm.query('04', 8000).catch(() => []);
-  alert(r.some(m => m[0] === 0x44) ? 'انبعت أمر المسح. اقرأ الأكواد كمان مرة للتأكد.' : 'السيارة ما قبلت المسح.');
+  alert(r.some(m => m[0] === 0x44) ? tr('انبعت أمر المسح. اقرأ الأكواد كمان مرة للتأكد.') : tr('السيارة ما قبلت المسح.'));
 };
 
 // ---------- start ----------
+setupLanguage($('langBtn'));
 try { RESULT = JSON.parse(localStorage.getItem('last') || 'null'); if (RESULT) renderSummary(); } catch { /* fresh start */ }
 renderDash();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
