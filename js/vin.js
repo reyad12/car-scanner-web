@@ -23,6 +23,21 @@ const VAG = {
 };
 const YEARS = 'ABCDEFGHJKLMNPRSTVWXY123456789';   // 2010.. (30-year cycle)
 
+/** 'R4 1.5l TFS' (engine ECU F197) -> '1.5 TSI (4 cyl.)' */
+export function engineFromEcu(name) {
+  const m = (name || '').match(/R(\d)\s*([\d.]+)\s*l\s*(TFS|TSI|TDI|MPI)?/i);
+  if (!m) return null;
+  const kind = (m[3] || '').toUpperCase(), fuel = kind === 'TDI' ? 'TDI' : kind === 'MPI' ? 'MPI' : 'TSI';
+  return `${m[2]} ${fuel} (${m[1]} cyl.)`;
+}
+
+// the user's garage: what we learned about each car, kept on the phone
+export function savedCar(vin) { try { return (JSON.parse(localStorage.getItem('garage') || '{}'))[vin] || null; } catch { return null; } }
+export function saveCar(car) {
+  try { const g = JSON.parse(localStorage.getItem('garage') || '{}'); g[car.vin] = { ...g[car.vin], ...car, saved: new Date().toISOString().slice(0, 10) };
+    localStorage.setItem('garage', JSON.stringify(g)); } catch { /* private mode */ }
+}
+
 export function decodeVin(vin) {
   if (!vin || vin.length !== 17) return null;
   const make = WMI[vin.slice(0, 3)] || null;

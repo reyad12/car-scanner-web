@@ -68,3 +68,10 @@ test('English dictionary covers the visible page', async () => {
     .filter(t => /[؀-ۿ]/.test(t));
   assert.deepEqual(left, []);
 });
+
+test('engine name from the ECU identification', async () => {
+  const { engineFromEcu } = await import('../js/vin.js');
+  assert.equal(engineFromEcu('R4 1.5l TFS'), '1.5 TSI (4 cyl.)');
+  assert.equal(engineFromEcu('R4 2.0l TDI'), '2.0 TDI (4 cyl.)');
+  assert.equal(engineFromEcu('xyz'), null);
+});

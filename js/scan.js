@@ -138,8 +138,9 @@ export async function inspect(elm, { make = null, progress = () => {} } = {}) {
     'من منفذ OBD وعبر هالقطعة ردّ كمبيوتر المحرك بس. باقي الوحدات (الجير، ABS، الوسائد…) بدها جهاز VAG مخصص.',
     'Only the engine ECU answered through this adapter; other modules need a VAG-capable tool.');
   if (L[0xa6]) add(f, 'odometer', 'cluster', 'info', `العداد: ${Math.round(L[0xa6]).toLocaleString()} كم`, `Odometer: ${Math.round(L[0xa6]).toLocaleString()} km`);
+  const eng = mods.find(m => m.addr === '01' && m.name);
   progress(100, 'انتهى', 'Done');
-  return { time: new Date().toISOString(), vin: v, codes: c, readiness: rd, mode06: tests, cylinders: cyl, live: L, volt, modules: mods,
+  return { time: new Date().toISOString(), vin: v, ecuEngine: eng ? eng.name : null, codes: c, readiness: rd, mode06: tests, cylinders: cyl, live: L, volt, modules: mods,
     findings: f, score: score(f), seconds: Math.round((Date.now() - t0) / 1000) };
 }
 

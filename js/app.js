@@ -4,7 +4,7 @@ import { SimTransport } from './sim.js';
 import { inspect, codes, describe, pid, supported } from './scan.js';
 import { parseResponse, parseVin } from './obd.js';
 import { setupLanguage, fl, tr } from './i18n.js';
-import { decodeVin } from './vin.js';
+import { decodeVin, engineFromEcu, savedCar, saveCar } from './vin.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -29,6 +29,7 @@ async function start(transport, label) {
     await elm.init();
     SUP = await supported(elm);
     CAR = decodeVin(parseVin(await elm.query('0902', 8000).catch(() => [])));
+    if (CAR) CAR = { ...CAR, ...(savedCar(CAR.vin) || {}) };      // what we learned on an earlier scan wins
     if (CAR && CAR.body) { $('bodySel').value = CAR.body; }
     setStatus('متصل ✔ ' + label, true);
     $('connect').hidden = true;
@@ -131,6 +132,11 @@ $('inspBtn').onclick = async () => {
   $('iprog').hidden = false; $('inspBtn').disabled = true;
   try {
     RESULT = await inspect(elm, { make: CAR && CAR.make, progress: (p, ar, en) => { $('ibar').style.width = p + '%'; $('imsg').textContent = (fl === 'en' ? en : ar) + ` (${p}%)`; } });
+    if (CAR) {   // first scan: write down what the car told us
+      if (!CAR.engine && RESULT.ecuEngine) CAR.engine = engineFromEcu(RESULT.ecuEngine) || RESULT.ecuEngine;
+      CAR.ecu = RESULT.ecuEngine || CAR.ecu; CAR.km = RESULT.live[0xa6] ? Math.round(RESULT.live[0xa6]) : CAR.km;
+      saveCar(CAR);
+    }
     localStorage.setItem('last', JSON.stringify(RESULT));
     renderSummary();
   } catch (e) { $('imsg').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
@@ -141,12 +147,26 @@ function renderSummary() {
   const r = RESULT; if (!r) return;
   const lvl = r.score >= 85 ? 'ok' : r.score >= 50 ? 'caution' : 'stop', order = { stop: 0, caution: 1, ok: 2, info: 3 };
   const cost = r.findings.filter(f => f.cost && (f.level === 'stop' || f.level === 'caution')).reduce((a, f) => [a[0] + f.cost[0], a[1] + f.cost[1]], [0, 0]);
-  $('isum').innerHTML = `<section class="card"><div class="row" style="gap:14px"><div class="dial ${lvl}"><b>${r.score}</b><span>من 100</span></div>
+  const c = CAR || (r.vin ? { ...decodeVin(r.vin), ...(savedCar(r.vin) || {}) } : null);
+  const carCard = c ? `<section class="card"><h2>🚗 سيارتي</h2>
+    <div class="row"><input id="cMake" dir="ltr" value="${esc(c.make || '')}" placeholder="الماركة" size="10"><input id="cModel" dir="ltr" value="${esc(c.model || '')}" placeholder="الموديل" size="12">
+     <input id="cYear" value="${esc(c.year || '')}" placeholder="السنة" size="5" dir="ltr"><input id="cEng" dir="ltr" value="${esc(c.engine || '')}" placeholder="المحرك" size="14">
+     <button id="cSave">💾 احفظ</button></div>
+    <div class="sub" dir="ltr">VIN ${esc(c.vin)}${c.ecu ? ' • ECU: ' + esc(c.ecu) : ''}${c.km ? ' • ' + c.km.toLocaleString() + ' km' : ''}</div>
+    <div class="sub">${c.modelFromVin ? 'الموديل انقرا من رقم الشاسيه.' : 'اكتب الموديل إذا ما انعرف لحاله.'} بينحفظ على التلفون لهالسيارة.</div></section>` : '';
+  $('isum').innerHTML = carCard + `<section class="card"><div class="row" style="gap:14px"><div class="dial ${lvl}"><b>${r.score}</b><span>من 100</span></div>
     <div><b style="font-size:19px">${r.score >= 85 ? 'ممتازة' : r.score >= 70 ? 'جيدة' : r.score >= 50 ? 'مقبولة — بدها تصليح' : 'سيئة'}</b>
     <div>التكلفة التقديرية: <b dir="ltr">$${cost[0].toLocaleString()}–${cost[1].toLocaleString()}</b></div><div class="sub" dir="ltr">${esc(r.vin || '')}</div>
     <button onclick="document.querySelector('[data-tab=map]').click()">🚙 شوفها على السيارة</button></div></div></section>
     <section class="card"><h2>النتائج</h2>${r.findings.slice().sort((a, b) => order[a.level] - order[b.level]).map(f => `<div class="dtc ${f.level}"><span class="tag">${LV[f.level]}</span>${esc(f[fl])}${f.cost ? ` <span class="sub" dir="ltr">($${f.cost[0]}–${f.cost[1]})</span>` : ''}</div>`).join('')}</section>`;
 }
+
+document.addEventListener('click', e => {
+  if (e.target.id !== 'cSave') return;
+  const vin = (CAR && CAR.vin) || (RESULT && RESULT.vin); if (!vin) return;
+  CAR = { ...(CAR || decodeVin(vin)), make: $('cMake').value.trim(), model: $('cModel').value.trim(), year: +$('cYear').value || null, engine: $('cEng').value.trim(), body: $('bodySel').value };
+  saveCar(CAR); $('carline').textContent = [CAR.make, CAR.model, CAR.year].filter(Boolean).join(' '); e.target.textContent = '✔';
+});
 
 // ---------- car map ----------
 let ANCH = null, ZOOM = false;
