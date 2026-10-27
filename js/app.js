@@ -5,6 +5,7 @@ import { inspect, codes, describe, pid, supported } from './scan.js';
 import { parseResponse, parseVin } from './obd.js';
 import { setupLanguage, fl, tr } from './i18n.js';
 import { decodeVin, engineFromEcu, savedCar, saveCar } from './vin.js';
+import { VERSION, CHANGES } from './version.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -227,6 +228,11 @@ $('clearBtn').onclick = async () => {
   const r = await elm.query('04', 8000).catch(() => []);
   alert(r.some(m => m[0] === 0x44) ? tr('انبعت أمر المسح. اقرأ الأكواد كمان مرة للتأكد.') : tr('السيارة ما قبلت المسح.'));
 };
+
+// ---------- version ----------
+$('ver').textContent = 'V' + VERSION;
+$('ver').onclick = () => { $('newslist').innerHTML = CHANGES.map(([v, ar, en]) => `<p><b dir="ltr">V${v}</b> — ${esc(fl === 'en' ? en : ar)}</p>`).join(''); $('news').showModal(); };
+if (localStorage.getItem('seenVersion') !== VERSION) { localStorage.setItem('seenVersion', VERSION); if (localStorage.getItem('last') || localStorage.getItem('hud')) setTimeout(() => $('ver').click(), 600); }
 
 // ---------- start ----------
 setupLanguage($('langBtn'));

@@ -75,3 +75,10 @@ test('engine name from the ECU identification', async () => {
   assert.equal(engineFromEcu('R4 2.0l TDI'), '2.0 TDI (4 cyl.)');
   assert.equal(engineFromEcu('xyz'), null);
 });
+
+test('version is bumped together with the offline cache', async () => {
+  const fs = await import('node:fs');
+  const { VERSION, CHANGES } = await import('../js/version.js');
+  assert.equal(CHANGES[0][0], VERSION);
+  assert.ok(fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8').includes(`car-scanner-${VERSION}'`));
+});

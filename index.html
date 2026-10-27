@@ -48,7 +48,7 @@ footer{color:var(--mut);font-size:11px;text-align:center;padding:10px}
 </style>
 </head>
 <body>
-<header><h1>🚗 فاحص السيارة <span id="carline" style="font-size:13px;color:var(--pri)"></span></h1><span id="st">غير متصل</span><button id="langBtn" style="padding:4px 10px;font-size:13px">English</button></header>
+<header><h1>🚗 فاحص السيارة <span id="carline" style="font-size:13px;color:var(--pri)"></span></h1><span id="ver" style="font-size:12px;color:var(--mut);cursor:pointer;border:1px solid var(--line);border-radius:99px;padding:3px 9px" title="شو الجديد"></span><span id="st">غير متصل</span><button id="langBtn" style="padding:4px 10px;font-size:13px">English</button></header>
 <main>
 <section class="card" id="connect">
   <h2>الاتصال بالقطعة</h2>
@@ -96,6 +96,8 @@ footer{color:var(--mut);font-size:11px;text-align:center;padding:10px}
 </div>
 </main>
 <footer>قراءة فقط — ما بيغيّر ولا بيرمّز شي بالسيارة. التكاليف تقديرية. <a href="cars/CREDITS.txt" style="color:var(--mut)">مصادر الصور والبيانات</a></footer>
+<dialog id="news" style="background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;max-width:420px">
+  <h2>شو الجديد</h2><div id="newslist"></div><button onclick="this.closest('dialog').close()">تمام</button></dialog>
 <nav id="nav"><button data-tab="dash" class="on"><b>⏱</b>داشبورد</button><button data-tab="insp"><b>🔍</b>الفحص</button>
   <button data-tab="map"><b>🚙</b>الرسمة</button><button data-tab="codes"><b>⚠</b>الأكواد</button></nav>
 <script type="module" src="js/app.js"></script>
