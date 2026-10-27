@@ -1,0 +1,195 @@
+[
+{
+"addr": "01",
+"tx": 2016,
+"rx": 2024,
+"en": "Engine electronics",
+"ar": "كمبيوتر المحرك",
+"zone": "engine",
+"confidence": "established",
+"ext": false,
+"only": [
+"ice"
+]
+},
+{
+"addr": "02",
+"tx": 2017,
+"rx": 2025,
+"en": "Transmission (DSG / automatic)",
+"ar": "كمبيوتر الجير",
+"zone": "gearbox",
+"confidence": "established",
+"ext": false,
+"only": [
+"ice"
+]
+},
+{
+"addr": "03",
+"tx": 1811,
+"rx": 1917,
+"en": "Brakes (ABS / ESC)",
+"ar": "الفرامل ABS / ESC",
+"zone": "abs",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "08",
+"tx": 1862,
+"rx": 1968,
+"en": "Air conditioning",
+"ar": "المكيّف",
+"zone": "hvac",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "09",
+"tx": 1806,
+"rx": 1912,
+"en": "Central electrics (BCM)",
+"ar": "الكهرباء المركزية BCM",
+"zone": "bcm",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "13",
+"tx": 1879,
+"rx": 1985,
+"en": "Adaptive cruise control (radar)",
+"ar": "مثبت السرعة التكيّفي (رادار)",
+"zone": "radar",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "15",
+"tx": 1813,
+"rx": 1919,
+"en": "Airbags",
+"ar": "الوسائد الهوائية",
+"zone": "airbag",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "16",
+"tx": 1804,
+"rx": 1910,
+"en": "Steering column electronics",
+"ar": "إلكترونيات عمود المقود",
+"zone": "steering",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "17",
+"tx": 1812,
+"rx": 1918,
+"en": "Instrument cluster",
+"ar": "لوحة العدادات",
+"zone": "cluster",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "19",
+"tx": 1808,
+"rx": 1914,
+"en": "Diagnostic gateway",
+"ar": "البوابة (Gateway)",
+"zone": "gateway",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "44",
+"tx": 1810,
+"rx": 1916,
+"en": "Power steering",
+"ar": "المقود الكهربائي",
+"zone": "steering",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "5F",
+"tx": 1907,
+"rx": 2013,
+"en": "Information electronics (infotainment)",
+"ar": "الشاشة والوسائط",
+"zone": "infotainment",
+"confidence": "established",
+"ext": false,
+"only": []
+},
+{
+"addr": "10",
+"tx": 1802,
+"rx": 1908,
+"en": "Park assist",
+"ar": "حساسات الركن",
+"zone": "parking",
+"confidence": "best-effort",
+"ext": false,
+"only": []
+},
+{
+"addr": "42",
+"tx": 1866,
+"rx": 1972,
+"en": "Driver door electronics",
+"ar": "باب السائق",
+"zone": "door_fl",
+"confidence": "best-effort",
+"ext": false,
+"only": []
+},
+{
+"addr": "52",
+"tx": 1867,
+"rx": 1973,
+"en": "Passenger door electronics",
+"ar": "باب الراكب",
+"zone": "door_fr",
+"confidence": "best-effort",
+"ext": false,
+"only": []
+},
+{
+"addr": "A5",
+"tx": 1871,
+"rx": 1977,
+"en": "Front camera (driver assist)",
+"ar": "الكاميرا الأمامية",
+"zone": "camera",
+"confidence": "best-effort",
+"ext": false,
+"only": []
+},
+{
+"addr": "8C",
+"tx": 402391163,
+"rx": 402522235,
+"en": "High-voltage battery (MEB)",
+"ar": "بطارية الجهد العالي",
+"zone": "hv_battery",
+"confidence": "best-effort",
+"ext": true,
+"only": [
+"ev"
+]
+}
+]

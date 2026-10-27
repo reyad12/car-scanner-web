@@ -1,0 +1,192 @@
+{
+"04": {
+"en": "Engine load",
+"ar": "حمل المحرك",
+"unit": "%"
+},
+"05": {
+"en": "Coolant temperature",
+"ar": "حرارة سائل التبريد",
+"unit": "°C"
+},
+"06": {
+"en": "Short fuel trim B1",
+"ar": "تصحيح الوقود القصير (صف 1)",
+"unit": "%"
+},
+"07": {
+"en": "Long fuel trim B1",
+"ar": "تصحيح الوقود الطويل (صف 1)",
+"unit": "%"
+},
+"0A": {
+"en": "Fuel pressure",
+"ar": "ضغط الوقود",
+"unit": "kPa"
+},
+"0B": {
+"en": "Intake manifold pressure",
+"ar": "ضغط مشعب السحب",
+"unit": "kPa"
+},
+"0C": {
+"en": "Engine RPM",
+"ar": "دورات المحرك",
+"unit": "rpm"
+},
+"0D": {
+"en": "Vehicle speed",
+"ar": "السرعة",
+"unit": "km/h"
+},
+"0E": {
+"en": "Timing advance",
+"ar": "تقديم الإشعال",
+"unit": "°"
+},
+"0F": {
+"en": "Intake air temperature",
+"ar": "حرارة هواء السحب",
+"unit": "°C"
+},
+"10": {
+"en": "MAF air flow",
+"ar": "تدفق الهواء (MAF)",
+"unit": "g/s"
+},
+"11": {
+"en": "Throttle position",
+"ar": "فتحة الخانق",
+"unit": "%"
+},
+"1F": {
+"en": "Run time since start",
+"ar": "زمن التشغيل",
+"unit": "s"
+},
+"21": {
+"en": "Distance with MIL on",
+"ar": "المسافة والمصباح مضاء",
+"unit": "km"
+},
+"2F": {
+"en": "Fuel level",
+"ar": "مستوى الوقود",
+"unit": "%"
+},
+"31": {
+"en": "Distance since codes cleared",
+"ar": "المسافة منذ مسح الأكواد",
+"unit": "km"
+},
+"33": {
+"en": "Barometric pressure",
+"ar": "الضغط الجوي",
+"unit": "kPa"
+},
+"42": {
+"en": "Control module voltage",
+"ar": "فولت الكمبيوتر",
+"unit": "V"
+},
+"46": {
+"en": "Ambient air temperature",
+"ar": "حرارة الجو",
+"unit": "°C"
+},
+"5C": {
+"en": "Engine oil temperature",
+"ar": "حرارة زيت المحرك",
+"unit": "°C"
+},
+"14": {
+"en": "O2 sensor B1S1 voltage",
+"ar": "فولت حساس الأكسجين (صف1 حساس1)",
+"unit": "V"
+},
+"15": {
+"en": "O2 sensor B1S2 voltage",
+"ar": "فولت حساس الأكسجين (صف1 حساس2)",
+"unit": "V"
+},
+"23": {
+"en": "Fuel rail pressure (gauge)",
+"ar": "ضغط سكة الوقود (عالي)",
+"unit": "kPa"
+},
+"2C": {
+"en": "Commanded EGR",
+"ar": "فتحة EGR المطلوبة",
+"unit": "%"
+},
+"2E": {
+"en": "Commanded evap purge",
+"ar": "تنقية EVAP المطلوبة",
+"unit": "%"
+},
+"30": {
+"en": "Warm-ups since codes cleared",
+"ar": "دورات التسخين منذ المسح",
+"unit": ""
+},
+"3C": {
+"en": "Catalyst temperature B1S1",
+"ar": "حرارة الكاتاليزر (صف1 قبل)",
+"unit": "°C"
+},
+"3E": {
+"en": "Catalyst temperature B1S2",
+"ar": "حرارة الكاتاليزر (صف1 بعد)",
+"unit": "°C"
+},
+"43": {
+"en": "Absolute load",
+"ar": "الحمل المطلق",
+"unit": "%"
+},
+"44": {
+"en": "Commanded air-fuel ratio (lambda)",
+"ar": "نسبة الهواء/الوقود المطلوبة (لامدا)",
+"unit": "λ"
+},
+"45": {
+"en": "Relative throttle position",
+"ar": "فتحة الخانق النسبية",
+"unit": "%"
+},
+"47": {
+"en": "Absolute throttle position B",
+"ar": "فتحة الخانق المطلقة B",
+"unit": "%"
+},
+"49": {
+"en": "Accelerator pedal position D",
+"ar": "موضع دواسة البنزين",
+"unit": "%"
+},
+"4C": {
+"en": "Commanded throttle actuator",
+"ar": "الخانق المطلوب",
+"unit": "%"
+},
+"5E": {
+"en": "Engine fuel rate",
+"ar": "معدل صرف الوقود",
+"unit": "L/h"
+},
+"61": {
+"en": "Driver demand torque",
+"ar": "العزم المطلوب من السائق",
+"unit": "%"
+},
+"62": {
+"en": "Actual engine torque",
+"ar": "عزم المحرك الفعلي",
+"unit": "%"
+},
+"63": {
+"en": "Engine reference torque",
+"ar": "عزم المحرك المرجعي",
+"unit": "Nm"
+}
+}

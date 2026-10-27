@@ -1,0 +1,20 @@
+kodiaq_side.png - cut out and resized from "White Škoda Kodiaq side view.jpg"
+by Renée Kools, licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/),
+via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:White_%C5%A0koda_Kodiaq_side_view.jpg
+Changes: background removed, cropped, resized, window sticker removed.
+
+
+hatchback_side.png - from "2020 Volkswagen Golf Style 1.5 Side.jpg" by Vauxford, CC BY-SA 4.0, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:2020_Volkswagen_Golf_Style_1.5_Side.jpg
+Changes: background removed, cropped, resized. This derivative is shared under the same licence.
+
+sedan_side.png - from "2020 Skoda Octavia vRS Challenge TSI - 1984cc 2.0 (245PS) Petrol - White - 05-2024, Side.jpg" by Harvey Bold, CC BY 4.0, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:2020_Skoda_Octavia_vRS_Challenge_TSI_-_1984cc_2.0_(245PS)_Petrol_-_White_-_05-2024,_Side.jpg
+Changes: background removed, cropped, resized, window sticker removed.
+
+mpv_side.png - from "Volkswagen Touran facelift II (side).JPG" by Miloslav Rejha, CC BY-SA 3.0, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Volkswagen_Touran_facelift_II_(side).JPG
+Changes: background removed, cropped, resized. This derivative is shared under the same licence.
+
+ev_side.png - from "Volkswagen ID.4 side.png" by Capital (a French business magazine), CC BY 3.0, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Volkswagen_ID.4_side.png
+Changes: background removed, cropped, resized, mirrored.
+
+estate_side.png - from "2013 Škoda Superb Combi Alldrive 2.0 TDI 4x4, right side.jpg" by Mr.choppers, CC BY-SA 3.0, via Wikimedia Commons: https://commons.wikimedia.org/wiki/File:2013_%C5%A0koda_Superb_Combi_Alldrive_2.0_TDI_4x4,_right_side.jpg
+Changes: background removed, cropped, resized, mirrored. This derivative is shared under the same licence.

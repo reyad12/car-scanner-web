@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1420">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>فاحص السيارة</title>
+<style>
+:root{--bg:#070b11;--card:#0f1620;--card2:#131d2a;--ink:#e8eef5;--mut:#8796a8;--line:#1e2b3b;--pri:#1fb6ff;--pri2:#0a7bd6;--stop:#ff3b3b;--cau:#ffa000;--ok:#22c55e;--glow:0 0 18px rgba(31,182,255,.35)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:radial-gradient(900px 500px at 70% -10%,#10233a 0%,transparent 60%),var(--bg);background-attachment:fixed;color:var(--ink);font-family:Tahoma,'Segoe UI',Arial,sans-serif;line-height:1.55;padding-bottom:70px}
+header{padding:12px 16px;background:linear-gradient(90deg,#0b1420,#0f2135);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header h1{font-size:19px;margin:0;flex:1}#st{font-size:12px;color:var(--mut);cursor:pointer;border:1px solid var(--line);border-radius:99px;padding:3px 10px}#st.on{color:var(--ok)}
+main{max-width:900px;margin:0 auto;padding:12px 14px}
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+h2{font-size:17px;margin:0 0 8px}.sub{color:var(--mut);font-size:13px}
+button,select{font:inherit;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.pri{background:linear-gradient(180deg,var(--pri),var(--pri2));border-color:var(--pri);color:#fff;box-shadow:var(--glow)}
+button.big{font-size:18px;padding:12px 20px;width:100%}button:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a111a;border-top:1px solid var(--line);z-index:6}
+nav button{flex:1;border:0;border-radius:0;background:none;color:var(--mut);padding:10px 2px;font-size:12px}nav button b{display:block;font-size:20px}
+nav button.on{color:var(--pri)}.pane{display:none}.pane.on{display:block}
+.err{color:#ff8a8a}.warn{background:rgba(255,160,0,.08);color:#ffcf7a;border:1px solid rgba(255,160,0,.35);border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+.dtc{border-inline-start:6px solid var(--line);padding:8px 12px;margin:8px 0;background:#0b121b;border-radius:8px}
+.dtc.stop{border-color:var(--stop)}.dtc.caution{border-color:var(--cau)}.dtc.ok{border-color:var(--ok)}
+.tag{font-size:11px;border:1px solid var(--line);padding:1px 7px;border-radius:99px;margin-inline-end:4px}
+.hud{background:radial-gradient(700px 340px at 50% 0%,#0f2a44 0%,#060a10 70%);border:1px solid #17304a;border-radius:18px;padding:12px}
+.gauges{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:6px;align-items:center}.gauges svg{width:100%;height:auto}
+.g12{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}@media(min-width:700px){.g12{grid-template-columns:repeat(4,1fr)}}
+.g12 div{background:linear-gradient(180deg,#0c1724,#081019);border:1px solid #17304a;border-radius:12px;padding:8px;text-align:center}
+.g12 small{display:block;color:#7fb8e6;font-size:11px}.g12 b{display:block;font-size:24px;color:#fff;font-family:Consolas,monospace;text-shadow:0 0 12px rgba(31,182,255,.45)}.g12 i{font-style:normal;color:var(--mut);font-size:11px}
+.lamps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lamp{background:#0a1018;border:1px solid #1a2636;border-radius:12px;padding:8px;text-align:center;color:#3a4656;font-size:12px}.lamp svg{width:40px;height:40px;display:block;margin:0 auto 2px}
+.lamp.red{color:#ff3b3b;border-color:#5a1a1a;box-shadow:0 0 14px rgba(255,59,59,.35)}.lamp.amber{color:#ffa000;border-color:#5a3b00;box-shadow:0 0 14px rgba(255,160,0,.35)}.lamp.green{color:#22c55e}
+.dial{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:bold;flex:none}
+.dial b{font-size:34px;line-height:1}.dial.ok{background:var(--ok)}.dial.caution{background:var(--cau)}.dial.stop{background:var(--stop)}
+.bar{height:12px;background:#0b121b;border-radius:6px;overflow:hidden;border:1px solid var(--line)}.bar i{display:block;height:100%;background:var(--pri);width:0;transition:width .3s}
+.map{border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#eef1f4 0%,#dfe4e9 58%,#c9d0d7 60%,#e3e7eb 100%);border:1px solid #2a3a4d}.map svg{width:100%;height:auto;display:block}
+.cm .mk{cursor:pointer}.cm .mk circle.dot{stroke:#fff;stroke-width:2}.cm .mk.s-stop circle{fill:#ff3b3b}.cm .mk.s-caution circle{fill:#ffa000}
+.cm .mk text{font-size:12px;font-weight:bold;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+body.hudmode header,body.hudmode nav,body.hudmode .hudbar,body.hudmode .warn,body.hudmode #connect{display:none}body.hudmode main{max-width:none;padding:0}
+body.hudmode .hud{border:0;border-radius:0;min-height:100vh;background:#000}body.hudmode.mirror #dashbody{transform:scaleX(-1)}
+#hudexit{display:none}body.hudmode #hudexit{display:block;position:fixed;top:8px;left:8px;z-index:9;opacity:.5}
+footer{color:var(--mut);font-size:11px;text-align:center;padding:10px}
+</style>
+</head>
+<body>
+<header><h1>🚗 فاحص السيارة</h1><span id="st">غير متصل</span></header>
+<main>
+<section class="card" id="connect">
+  <h2>الاتصال بالقطعة</h2>
+  <p class="sub">ركّب القطعة (KUULAA / vLinker / أي ELM327 بلوتوث BLE) بمنفذ OBD، وشغّل الإشعال ON أو المحرك، وبعدين:</p>
+  <div class="row"><button class="pri big" id="bleBtn">🔵 اتصل بالقطعة (بلوتوث)</button></div>
+  <div class="row" style="margin-top:8px"><span class="sub">أو جرّب بدون سيارة:</span>
+    <select id="simSel"><option value="kodiaq">كودياك 2023 (قراءات حقيقية)</option><option value="demo">سيارة تجربة (أعطال شائعة)</option></select>
+    <button id="simBtn">تجربة</button><button id="disBtn">افصل</button></div>
+  <p id="cmsg" class="sub"></p>
+</section>
+
+<div class="pane on" id="p-dash">
+  <section class="hud">
+    <div class="row hudbar" style="margin-bottom:8px"><b style="flex:1">الداشبورد الحي</b>
+      <button data-hud="gauges">عدادات</button><button data-hud="grid">12 قراءة</button><button data-hud="lamps">لمبات</button>
+      <button id="runBtn" class="pri">▶ تشغيل</button><button id="hudBtn">🪟 HUD</button></div>
+    <div id="dashbody"></div>
+  </section>
+  <button id="hudexit">✕</button>
+</div>
+
+<div class="pane" id="p-insp">
+  <section class="card"><h2>الفحص الشامل</h2>
+    <p class="sub">بيقرا الأعطال، الفحوصات الذاتية، اختبارات Mode 06، صحة المحرك، الشحن، ووحدات السيارة. خلّي المحرك شغّال إذا بتقدر. قراءة فقط.</p>
+    <button class="pri big" id="inspBtn">ابدأ الفحص الشامل</button>
+    <div id="iprog" hidden style="margin-top:8px"><div class="bar"><i id="ibar"></i></div><p id="imsg" class="sub"></p></div></section>
+  <div id="isum"></div>
+</div>
+
+<div class="pane" id="p-map">
+  <section class="card"><div class="row"><h2 style="flex:1;margin:0">وين المشكلة بالسيارة</h2>
+    <select id="bodySel"><option value="suv">SUV</option><option value="hatchback">هاتشباك</option><option value="sedan">سيدان</option>
+      <option value="estate">ستيشن</option><option value="mpv">عائلية</option><option value="ev">كهربائية</option></select></div>
+    <div class="map" id="map" style="margin-top:8px"></div>
+    <div class="row" style="justify-content:space-between"><span class="sub">اكبس على المشكلة لتشوفها عن قريب.</span><button id="zoomOut" hidden>⤢ كل السيارة</button></div>
+    <div id="zinfo" class="card" style="margin-top:8px;scroll-margin-top:60px"><span class="sub">اعمل الفحص الشامل أول، وبتطلع المشاكل هون.</span></div>
+    <p id="credit" class="sub" style="font-size:11px"></p></section>
+</div>
+
+<div class="pane" id="p-codes">
+  <section class="card"><h2>الأكواد</h2>
+    <div class="row"><button class="pri" id="codesBtn">اقرأ الأكواد</button><button id="clearBtn">مسح الأكواد…</button></div>
+    <div id="codes"></div></section>
+</div>
+</main>
+<footer>قراءة فقط — ما بيغيّر ولا بيرمّز شي بالسيارة. التكاليف تقديرية. <a href="cars/CREDITS.txt" style="color:var(--mut)">مصادر الصور والبيانات</a></footer>
+<nav id="nav"><button data-tab="dash" class="on"><b>⏱</b>داشبورد</button><button data-tab="insp"><b>🔍</b>الفحص</button>
+  <button data-tab="map"><b>🚙</b>الرسمة</button><button data-tab="codes"><b>⚠</b>الأكواد</button></nav>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
